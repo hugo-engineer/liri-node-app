@@ -1,65 +1,83 @@
-// questions
-// How work with one or two search terms
-
-
-
 require("dotenv").config();
 
 var fs = require("fs");
 var keys = require("./keys.js");
 const axios = require('axios');
 var Spotify = require('node-spotify-api');
+var moment = require('moment');
 
 var search1 = process.argv[2];
-var search2Word1 = process.argv[3];
-var search2Word2 = process.argv[4];
-var search2 = search2Word1 + " " + search2Word2;
-
+var search2 = process.argv.slice(3).join(" ");
 
 switch (search1) {
-  case 
-  "concert-this" : concertFun();
-  break;
-  case 
-  "spotify-this-song" : spotFun();
-  break; 
-  case 
-  "movie-this" : console.log("movie-this");
-  break; 
-  case 
-  "do-what-it-says" : console.log("do-what-it-says");
-  break; 
+  case
+    "concert-this": concertFun();
+    break;
+  case
+    "spotify-this-song": spotFun();
+    break;
+  case
+    "movie-this": movie();
+    break;
+  case
+    "do-what-it-says": random();
+    break;
 
 }
+// -----------------------------------------------------//
+function concertFun() {
 
-function spotFun (){
+  axios.get(`https://rest.bandsintown.com/artists/${search2}/events?app_id=codingbootcamp`)
+    .then(function (response) {
+
+      var data = response.data;
+      var dataDisplay = data[0].venue.name + ", " + data[0].venue.country + ", " + moment(data[0].datetime).format("D MMM YYYY" + "/n/")
+      console.log(dataDisplay);
+
+      fs.appendFile("log.txt", dataDisplay, () => {});
+    })
+}
+// -----------------------------------------------------//
+function spotFun() {
+  if (search2 == " ") {
+    search2 = "The Sign Ace of Base";
+  }
   var spotify = new Spotify(keys.spotify);
 
-  spotify.search({ type: 'track', query: search2 }, function(err, data) {
-      if (err) {
-        return console.log('Error occurred: ' + err);
-      }
-    console.log(data.tracks.items[0].artists[0].name); 
-    console.log(data.tracks.items[0].artists[0]);    
-   
-    });
-}
-
-
-function concertFun () {
-  axios.get(`https://rest.bandsintown.com/artists/${search2}/events?app_id=codingbootcamp`)
-  .then(function (response) {
+  spotify.search({ type: 'track', query: search2 }, function (err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    console.log(data.tracks.items[0].artists[0].name,
+      "\n",
+      data.tracks.items[0].name,
+      "\n",
+      data.tracks.items[0].external_urls.spotify
+    );
     
-    console.log(response.test.offers);
-  })
+  });
+};
+// -----------------------------------------------------//
+
+function movie() {
+
+  axios.get(`http://www.omdbapi.com/?apikey=trilogy&t=${search2}`)
+    .then(function (response) {
+
+      var data = response.data;
+      console.log(data.Title,
+        data.Year,
+        data.imdbID);
+    })
 }
-
-
-
-
-
-
-  // var moment = require('moment');
-// moment().format();
-
-// console.log(keys);
+// -----------------------------------------------------//
+function random() {
+  fs.readFile("random.txt", "utf8", function (error, data) {
+    if (error) {
+      return console.log(error);
+    }
+    var newData = data.split(", ");
+    search2 = newData[1];
+    spotFun()
+  });
+};

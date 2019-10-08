@@ -1,7 +1,7 @@
 {
   "name": "liri-node-app",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Hugo file",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/hugo-engineer/liri-node-app.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hugo",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hugo-engineer/liri-node-app/issues"
@@ -22,5 +22,6 @@
     "dotenv": "^8.1.0",
     "moment": "^2.24.0",
     "node-spotify-api": "^1.1.1"
-  }
+  },
+  "devDependencies": {}
 }
