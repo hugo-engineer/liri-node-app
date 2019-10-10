@@ -9,6 +9,20 @@ var moment = require('moment');
 var search1 = process.argv[2];
 var search2 = process.argv.slice(3).join(" ");
 
+var movie = () => {
+
+  axios.get(`http://www.omdbapi.com/?apikey=trilogy&t=${search2}`)
+    .then(function (response) {
+
+      var data = response.data;
+      console.log(data.Title,
+        data.Year,
+        data.imdbID);
+    })
+
+    
+}
+
 switch (search1) {
   case
     "concert-this": concertFun();
@@ -31,7 +45,8 @@ function concertFun() {
     .then(function (response) {
 
       var data = response.data;
-      var dataDisplay = data[0].venue.name + ", " + data[0].venue.country + ", " + moment(data[0].datetime).format("D MMM YYYY" + "/n/")
+      //TODO: console log data[0], for some reason is undefinde
+      var dataDisplay = data[0].venue.name + ", " + data[0].venue.country + ", " + moment(data[0].datetime).format("D MMM YYYY") 
       console.log(dataDisplay);
 
       fs.appendFile("log.txt", dataDisplay, () => {});
@@ -59,17 +74,7 @@ function spotFun() {
 };
 // -----------------------------------------------------//
 
-function movie() {
 
-  axios.get(`http://www.omdbapi.com/?apikey=trilogy&t=${search2}`)
-    .then(function (response) {
-
-      var data = response.data;
-      console.log(data.Title,
-        data.Year,
-        data.imdbID);
-    })
-}
 // -----------------------------------------------------//
 function random() {
   fs.readFile("random.txt", "utf8", function (error, data) {
